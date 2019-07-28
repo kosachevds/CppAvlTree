@@ -1,5 +1,6 @@
 ﻿#include <list>
 #include "AvlTree.h"
+#include <algorithm>
 
 struct Node
 {
@@ -39,8 +40,7 @@ void Node::fixHeight()
 {
     auto left_height = getHeight(this->left);
     auto right_height = getHeight(this->right);
-    this->height = ((left_height > right_height) ? left_height : right_height) + 1;
-    //this->height = std::max(left_height, right_height) + 1;
+    this->height = std::max(left_height, right_height) + 1;
 }
 
 NodePtr Node::rotateRight()
