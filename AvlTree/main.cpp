@@ -14,8 +14,11 @@ void write(std::ostream& stream, const InputIterator& begin, const InputIterator
 std::vector<int> measureHeightWithRandom(int items_count);
 void addRandom(Tree& tree, int max_item);
 void removeRandom(Tree& tree, int max_item);
-std::valarray<int> timeOperation(int items_count, const std::function<void(Tree&)>& operation);
+std::valarray<int> timeOperationUSec(int items_count, const std::function<void(Tree&)>& operation);
+int timeOperationUSec(Tree& tree, const std::function<void(Tree&)>& operation);
 void testTreeAdd(int item_count);
+Tree createRandom(int item_count, int max_item);
+std::valarray<int> timeRemoveUSec(int min_count, int max_count, int count_step);
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -26,22 +29,21 @@ int main()
     //const auto TEST_ITEM_COUNT = 100'000;
     //testTreeAdd(TEST_ITEM_COUNT);
 
-    auto out_filename = "values.txt";
+    auto out_filename = "times.txt";
+    const auto launch_count = 10;
+    std::valarray<int> usec_array;
 
-    const auto items_count = 1000;
-    const auto launch_count = 1000;
-
-    std::valarray<int> results(items_count);
     for (int i = 0; i < launch_count; ++i) {
-        //auto results = measureHeightWithRandom(items_count);
-        results += timeOperation(items_count, [items_count](auto tree)
-        {
-            addRandom(tree, items_count);
-        });
+        auto launch_times = timeRemoveUSec(100, 10000, 100);
+        if (usec_array.size() == 0) {
+            usec_array = launch_times;
+        } else {
+            usec_array += launch_times;
+        }
     }
 
     std::ofstream out_file(out_filename);
-    write(out_file, begin(results), end(results));
+    write(out_file, begin(usec_array), end(usec_array));
     out_file.close();
 }
 
@@ -79,17 +81,23 @@ void removeRandom(Tree& tree, int max_item)
     tree.remove(key);
 }
 
-std::valarray<int> timeOperation(int items_count, const std::function<void(Tree&)>& operation)
+std::valarray<int> timeOperationUSec(int items_count, const std::function<void(Tree&)>& operation)
 {
     std::valarray<int> times(items_count);
     Tree tree;
     for (int i = 0; i < items_count; ++i) {
-        auto begin = std::chrono::high_resolution_clock::now();
-        operation(tree);
-        auto end = std::chrono::high_resolution_clock::now();
-        times[i] = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+        times[i] = timeOperationUSec(tree, operation);
     }
     return times;
+}
+
+int timeOperationUSec(Tree& tree, const std::function<void(Tree&)>& operation)
+{
+    auto begin = std::chrono::high_resolution_clock::now();
+    operation(tree);
+    auto end = std::chrono::high_resolution_clock::now();
+    auto diff = end - begin;
+    return std::chrono::duration_cast<std::chrono::microseconds>(diff).count();
 }
 
 void testTreeAdd(int item_count)
@@ -109,4 +117,28 @@ void testTreeAdd(int item_count)
 
     std::cout << "Success!\n";
 
+}
+
+Tree createRandom(int item_count, int max_item)
+{
+    Tree tree;
+    for (int i = 0; i < item_count; ++i) {
+        addRandom(tree, max_item);
+    }
+    return tree;
+}
+
+std::valarray<int> timeRemoveUSec(int min_count, int max_count, int count_step)
+{
+    std::vector<int> times;
+    for (int count = min_count; count <= max_count; count += count_step) {
+        auto max_item = 10 * count;
+        auto tree = createRandom(count, max_item);
+        auto usec = timeOperationUSec(tree, [max_item] (Tree& tree)
+        {
+            removeRandom(tree, max_item);
+        });
+        times.push_back(usec);
+    }
+    return std::valarray<int>(times.data(), times.size());
 }
