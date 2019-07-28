@@ -1,30 +1,6 @@
 ﻿#include <list>
-#include "AvlTree.h"
 #include <algorithm>
-
-struct Node
-{
-    KeyType key;
-    uint8_t height;
-    NodePtr left;
-    NodePtr right;
-
-    explicit Node(KeyType key);
-    int bfactor() const;
-    void fixHeight();
-    NodePtr rotateRight();
-    NodePtr rotateLeft();
-    NodePtr balance();
-
-    static uint8_t getHeight(NodePtr node);
-    static NodePtr insert(NodePtr root, KeyType key);
-    static NodePtr findMin(NodePtr root);
-    static NodePtr find(NodePtr root, KeyType key);
-    static NodePtr removeMin(NodePtr root);
-    static NodePtr remove(NodePtr root, KeyType key);
-};
-
-std::list<Node> _nodes_buffer;
+#include "AvlTree.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -33,19 +9,18 @@ Node::Node(KeyType key)
 
 int Node::bfactor() const
 {
-    return getHeight(this->right) - getHeight(this->left);
+    return heightOrZero(this->right) - heightOrZero(this->left);
 }
 
 void Node::fixHeight()
 {
-    auto left_height = getHeight(this->left);
-    auto right_height = getHeight(this->right);
+    auto left_height = heightOrZero(this->left);
+    auto right_height = heightOrZero(this->right);
     this->height = std::max(left_height, right_height) + 1;
 }
 
-NodePtr Node::rotateRight()
+NodePtr Node::rotateRight(NodePtr& p)
 {
-    auto p = this;
     auto q = p->left;
     p->left = q->right;
     q->right = p;
@@ -54,9 +29,8 @@ NodePtr Node::rotateRight()
     return q;
 }
 
-NodePtr Node::rotateLeft()
+NodePtr Node::rotateLeft(NodePtr& q)
 {
-    auto q = this;
     auto p = q->right;
     q->right = p->left;
     p->left = q;
@@ -65,28 +39,27 @@ NodePtr Node::rotateLeft()
     return p;
 }
 
-NodePtr Node::balance()
+NodePtr Node::balance(NodePtr& p)
 {
-    auto p = this;
     p->fixHeight();
     if (p->bfactor() == 2) {
         // Big Left rotate
         if (p->right->bfactor() < 0) {
-            p->right = p->right->rotateRight();
+            p->right = rotateRight(p->right);
         }
-        return p->rotateLeft();
+        return rotateLeft(p);
     }
     if (p->bfactor() == -2) {
         // Big Right rotate
         if (p->left->bfactor() > 0) {
-            p->left = p->left->rotateLeft();
+            p->left = rotateLeft(p->left);
         }
-        return p->rotateRight();
+        return rotateRight(p);
     }
     return p;
 }
 
-uint8_t Node::getHeight(NodePtr node)
+uint8_t Node::heightOrZero(const NodePtr& node)
 {
     if (node == nullptr) {
         return 0;
@@ -94,18 +67,18 @@ uint8_t Node::getHeight(NodePtr node)
     return node->height;
 }
 
-NodePtr Node::insert(NodePtr root, KeyType key)
+NodePtr Node::insert(NodePtr& root, KeyType key)
 {
     if (root == nullptr) {
-        _nodes_buffer.emplace_back(key);
-        return &(_nodes_buffer.back()); // work good?
+        root = std::make_shared<Node>(key);
+        return root;
     }
     if (key < root->key) {
         root->left = insert(root->left, key);
     } else {
         root->right = insert(root->right, key);
     }
-    return root->balance();
+    return balance(root);
 }
 
 NodePtr Node::findMin(NodePtr root)
@@ -130,16 +103,16 @@ NodePtr Node::find(NodePtr root, KeyType key)
     return root;
 }
 
-NodePtr Node::removeMin(NodePtr root)
+NodePtr Node::removeMin(NodePtr& root)
 {
     if (root->left == nullptr) {
         return root->right;
     }
     root->left = removeMin(root->left);
-    return root->balance();
+    return balance(root);
 }
 
-NodePtr Node::remove(NodePtr root, KeyType key)
+NodePtr Node::remove(NodePtr& root, KeyType key)
 {
     if (root == nullptr) {
         return nullptr;
@@ -155,12 +128,12 @@ NodePtr Node::remove(NodePtr root, KeyType key)
         if (r == nullptr) {
             return q;
         }
-        auto min = findMin(r);
-        min->right = removeMin(r);
-        min->left = q;
-        return min->balance();
+        auto min_node = findMin(r);
+        min_node->right = removeMin(r);
+        min_node->left = q;
+        return balance(min_node);
     }
-    return root->balance();
+    return balance(root);
 }
 
 void Tree::add(KeyType key)
@@ -180,7 +153,7 @@ bool Tree::isContains(KeyType key) const
 
 int Tree::getHeight() const
 {
-    return Node::getHeight(this->root);
+    return Node::heightOrZero(this->root);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

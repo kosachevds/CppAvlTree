@@ -2,12 +2,12 @@
 #include <ctime>
 #include <cstdlib>
 #include <valarray>
-#include <fstream>
 #include <functional>
 #include <vector>
 #include <chrono>
 #include <cassert>
 #include <iostream>
+#include <fstream>
 
 template <typename InputIterator>
 void write(std::ostream& stream, const InputIterator& begin, const InputIterator& end);
@@ -15,31 +15,34 @@ std::vector<int> measureHeightWithRandom(int items_count);
 void addRandom(Tree& tree, int max_item);
 void removeRandom(Tree& tree, int max_item);
 std::valarray<int> timeOperation(int items_count, const std::function<void(Tree&)>& operation);
-void testTreeAdd1000();
+void testTreeAdd(int item_count);
 
 ///////////////////////////////////////////////////////////////////////////////
 
 int main()
 {
     srand(unsigned(time(nullptr)));
-    testTreeAdd1000();
-    //auto out_filename = "values.txt";
 
-    //const auto items_count = 100'000;
-    //const auto launch_count = 100;
+    //const auto TEST_ITEM_COUNT = 100'000;
+    //testTreeAdd(TEST_ITEM_COUNT);
 
-    //std::valarray<int> results(items_count);
-    //for (int i = 0; i < launch_count; ++i) {
-    //    //auto results = measureHeightWithRandom(items_count);
-    //    results += timeOperation(items_count, [items_count](auto tree)
-    //    {
-    //        addRandom(tree, items_count);
-    //    });
-    //}
+    auto out_filename = "values.txt";
 
-    //std::ofstream out_file(out_filename);
-    //write(out_file, begin(results), end(results));
-    //out_file.close();
+    const auto items_count = 1000;
+    const auto launch_count = 1000;
+
+    std::valarray<int> results(items_count);
+    for (int i = 0; i < launch_count; ++i) {
+        //auto results = measureHeightWithRandom(items_count);
+        results += timeOperation(items_count, [items_count](auto tree)
+        {
+            addRandom(tree, items_count);
+        });
+    }
+
+    std::ofstream out_file(out_filename);
+    write(out_file, begin(results), end(results));
+    out_file.close();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -89,20 +92,19 @@ std::valarray<int> timeOperation(int items_count, const std::function<void(Tree&
     return times;
 }
 
-void testTreeAdd1000()
+void testTreeAdd(int item_count)
 {
-    auto const ITEM_COUNT = 1000;
     Tree tree;
-    std::vector<int> items(ITEM_COUNT);
+    std::vector<int> items(item_count);
 
-    for (int i = 0; i < ITEM_COUNT; ++i) {
+    for (int i = 0; i < item_count; ++i) {
         auto item = rand();
         items[i] = item;
         tree.add(item);
     }
 
     for (auto item: items) {
-        assert(tree.isContains(item), std::to_wstring(item).c_str());
+        assert(tree.isContains(item));
     }
 
     std::cout << "Success!\n";
