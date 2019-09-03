@@ -23,8 +23,8 @@ NodePtr Node::rotateRight(NodePtr& p)
 {
     auto q = p->left;
     p->left = q->right;
-    q->right = p;
     p->fixHeight();
+    q->right = p;
     q->fixHeight();
     return q;
 }
@@ -33,8 +33,8 @@ NodePtr Node::rotateLeft(NodePtr& q)
 {
     auto p = q->right;
     q->right = p->left;
-    p->left = q;
     q->fixHeight();
+    p->left = q;
     p->fixHeight();
     return p;
 }
@@ -114,6 +114,7 @@ NodePtr Node::removeMin(NodePtr& root)
 
 NodePtr Node::remove(NodePtr& root, KeyType key)
 {
+    // TODO: check function
     if (root == nullptr) {
         return nullptr;
     }
