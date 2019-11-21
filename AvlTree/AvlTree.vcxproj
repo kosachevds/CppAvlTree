@@ -147,11 +147,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AvlTree.h" />
+    <ClInclude Include="Measures.h" />
     <ClInclude Include="Tests.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AvlTree.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Measures.cpp" />
     <ClCompile Include="Tests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
