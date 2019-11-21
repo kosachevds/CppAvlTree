@@ -12,11 +12,8 @@ Tests::Tests(int items_count)
 
 Tests Tests::adding() const
 {
-	Tree tree;
 	auto items = generateUniqueRandom();
-	for (auto item : items) {
-			tree.add(item);
-	}
+	auto tree = Tree::create(items.begin(), items.end());
 	for (auto item: items) {
 		assert(tree.isContains(item));
 	}
@@ -25,11 +22,8 @@ Tests Tests::adding() const
 
 Tests Tests::removingRandom() const
 {
-	Tree tree;
 	auto items = generateUniqueRandom();
-	for (auto item : items) {
-		tree.add(item);
-	}
+	auto tree = Tree::create(items.begin(), items.end());
 	for (auto item : items) {
 		tree.remove(item);
 		assert(!tree.isContains(item));
@@ -39,11 +33,8 @@ Tests Tests::removingRandom() const
 
 Tests Tests::removingRandomDeep() const
 {
-	Tree tree;
 	auto items = generateUniqueRandom();
-	for (auto item : items) {
-		tree.add(item);
-	}
+	auto tree = Tree::create(items.begin(), items.end());
 	for (auto it = items.begin(); it != items.end(); ++it) {
 		tree.remove(*it);
 		assert(!tree.isContains(*it));
