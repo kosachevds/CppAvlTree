@@ -1,5 +1,5 @@
 #include "AvlTree.h"
-#include <ctime>
+#include "Tests.h"
 #include <cstdlib>
 #include <valarray>
 #include <functional>
@@ -8,7 +8,6 @@
 #include <cassert>
 #include <iostream>
 #include <fstream>
-#include <unordered_set>
 
 template <typename InputIterator>
 void write(std::ostream& stream, const InputIterator& begin, const InputIterator& end);
@@ -18,10 +17,6 @@ void addRandom(Tree& tree, int max_item);
 void removeRandom(Tree& tree, int max_item);
 std::valarray<int> timeOperationUSec(int items_count, const std::function<void(Tree&)>& operation);
 int timeOperationUSec(Tree& tree, const std::function<void(Tree&)>& operation);
-void testTreeAdd(int item_count);
-void testTreeRemoveRandom(int item_count);
-void testTreeRemoveRandomDeep(int item_count);
-void testTreeRemoveSequence(int count);
 Tree createRandom(int item_count, int max_item);
 std::valarray<int> timeRemoveUSec(int min_count, int max_count, int count_step);
 
@@ -29,12 +24,13 @@ std::valarray<int> timeRemoveUSec(int min_count, int max_count, int count_step);
 
 int main()
 {
-    srand(unsigned(time(nullptr)));
-
-    //testTreeAdd(100'000);
-    //testTreeRemoveRandom(1000);
-    //testTreeRemoveDeep(40'000);
-    testTreeRemoveSequence(10);
+	const auto TEST_ITEMS_COUNT = 10'000;
+	Tests(TEST_ITEMS_COUNT)
+		.adding()
+		.removingRandom()
+		.removingRandomDeep()
+		.removingSequence();
+	std::cout << "Tests passed!\n";
 
     //auto temp = measureHeightWithAcsending(100);
 
@@ -120,88 +116,6 @@ int timeOperationUSec(Tree& tree, const std::function<void(Tree&)>& operation)
     auto end = std::chrono::high_resolution_clock::now();
     auto diff = end - begin;
     return std::chrono::duration_cast<std::chrono::microseconds>(diff).count();
-}
-
-void testTreeAdd(int item_count)
-{
-    Tree tree;
-    std::vector<int> items(item_count);
-
-    for (int i = 0; i < item_count; ++i) {
-        auto item = rand();
-        items[i] = item;
-        tree.add(item);
-    }
-
-    for (auto item: items) {
-        assert(tree.isContains(item));
-    }
-
-    std::cout << "Success!\n";
-
-}
-
-void testTreeRemoveRandom(int item_count)
-{
-    Tree tree;
-    std::unordered_set<int> items;
-    items.reserve(item_count);
-    for (int i = 0; i < item_count; ++i) {
-        int item;
-        do {
-            item = rand();
-        } while (items.find(item) != items.end());
-        items.insert(item);
-        tree.add(item);
-    }
-    for (auto item : items) {
-        tree.remove(item);
-        assert(!tree.isContains(item));
-    }
-
-    std::cout << "Success!\n";
-}
-
-void testTreeRemoveRandomDeep(int item_count)
-{
-    Tree tree;
-    std::unordered_set<int> items;
-    items.reserve(item_count);
-    for (int i = 0; i < item_count; ++i) {
-        int item;
-        do {
-            item = rand();
-        } while (items.find(item) != items.end());
-        items.insert(item);
-        tree.add(item);
-    }
-    for (auto it = items.begin(); it != items.end(); ++it) {
-        tree.remove(*it);
-        assert(!tree.isContains(*it));
-        auto it2 = ++it;
-        --it;
-        for (;it2 != items.end(); ++it2) {
-            assert(tree.isContains(*it2));
-        }
-    }
-
-    std::cout << "Success!\n";
-
-}
-
-void testTreeRemoveSequence(int count)
-{
-    Tree tree;
-    std::vector<int> items;
-    items.reserve(count);
-    for (int i = 0; i < count; ++i) {
-        items.push_back(i);
-        tree.add(i);
-    }
-    for (auto item : items) {
-        tree.remove(item);
-        assert(!tree.isContains(item));
-    }
 }
 
 Tree createRandom(int item_count, int max_item)
