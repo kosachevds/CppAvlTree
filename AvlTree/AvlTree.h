@@ -42,8 +42,6 @@ private:
     NodePtr root { nullptr };
 };
 
-#endif // AVLTREE_H
-
 template<typename InputIterator>
 inline Tree Tree::create(InputIterator begin, InputIterator end)
 {
@@ -53,3 +51,5 @@ inline Tree Tree::create(InputIterator begin, InputIterator end)
 	}
 	return tree;
 }
+
+#endif // AVLTREE_H
