@@ -1,5 +1,6 @@
 #include "Tests.h"
 #include "AvlTree.h"
+#include "Utils.h"
 #include <cassert>
 #include <unordered_set>
 #include <ctime>
@@ -12,7 +13,7 @@ Tests::Tests(int items_count)
 
 Tests Tests::adding() const
 {
-	auto items = createRandomSet(this->_item_count);
+	auto items = Utils::createRandomSet(this->_item_count);
 	auto tree = Tree::create(items.begin(), items.end());
 	for (auto item: items) {
 		assert(tree.isContains(item));
@@ -22,7 +23,7 @@ Tests Tests::adding() const
 
 Tests Tests::removingRandom() const
 {
-	auto items = createRandomSet(this->_item_count);
+	auto items = Utils::createRandomSet(this->_item_count);
 	auto tree = Tree::create(items.begin(), items.end());
 	for (auto item : items) {
 		tree.remove(item);
@@ -33,7 +34,7 @@ Tests Tests::removingRandom() const
 
 Tests Tests::removingRandomDeep() const
 {
-	auto items = createRandomSet(this->_item_count);
+	auto items = Utils::createRandomSet(this->_item_count);
 	auto tree = Tree::create(items.begin(), items.end());
 	for (auto it = items.begin(); it != items.end(); ++it) {
 		tree.remove(*it);
@@ -58,15 +59,5 @@ Tests Tests::removingSequence() const
 		assert(!tree.isContains(item));
 	}
 	return *this;
-}
-
-std::unordered_set<int> Tests::createRandomSet(int count)
-{
-	std::unordered_set<int> items;
-	items.reserve(count);
-	while (int(items.size()) < count) {
-		items.insert(rand());
-	}
-	return items;
 }
 
