@@ -36,8 +36,20 @@ public:
     void remove(KeyType key);
     bool isContains(KeyType key) const;
     int getHeight() const;
+	template <typename InputIterator>
+	static Tree create(InputIterator begin, InputIterator end);
 private:
     NodePtr root { nullptr };
 };
 
 #endif // AVLTREE_H
+
+template<typename InputIterator>
+inline Tree Tree::create(InputIterator begin, InputIterator end)
+{
+	Tree tree;
+	for (auto it = begin; it != end; ++it) {
+		tree.add(*it);
+	}
+	return tree;
+}
