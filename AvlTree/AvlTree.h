@@ -2,36 +2,40 @@
 #define AVLTREE_H
 #include <memory>
 
-using KeyType = int;
+template <typename T>
 struct Node;
-using NodePtr = std::shared_ptr<Node>;
 
+template <typename T>
+using NodePtr = std::shared_ptr<Node<T>>;
+
+template <typename T>
 struct Node
 {
-    KeyType key;
+    T key;
     uint8_t height;
-    NodePtr left;
-    NodePtr right;
+    NodePtr<T> left;
+    NodePtr<T> right;
 
-    explicit Node(KeyType key);
+    explicit Node(T key);
     int bfactor() const;
     void fixHeight();
 
-    static NodePtr rotateRight(NodePtr& p);
-    static NodePtr rotateLeft(NodePtr& q);
-    static NodePtr balance(NodePtr& p);
-    static uint8_t heightOrZero(const NodePtr& node);
-    static NodePtr insert(NodePtr& root, KeyType key);
-    static NodePtr findMin(NodePtr root);
-    static NodePtr find(NodePtr root, KeyType key);
-    static NodePtr removeMin(NodePtr& root);
-    static NodePtr remove(NodePtr& root, KeyType key);
+    static NodePtr<T> rotateRight(NodePtr<T>& p);
+    static NodePtr<T> rotateLeft(NodePtr<T>& q);
+    static NodePtr<T> balance(NodePtr<T>& p);
+    static uint8_t heightOrZero(const NodePtr<T>& node);
+    static NodePtr<T> insert(NodePtr<T>& root, T key);
+    static NodePtr<T> findMin(NodePtr<T> root);
+    static NodePtr<T> find(NodePtr<T> root, T key);
+    static NodePtr<T> removeMin(NodePtr<T>& root);
+    static NodePtr<T> remove(NodePtr<T>& root, T key);
 };
 
 class Tree final
 {
 public:
-    Tree() = default;
+	using KeyType = int;
+	Tree() = default;
     void add(KeyType key);
     void remove(KeyType key);
     bool isContains(KeyType key) const;
@@ -39,7 +43,7 @@ public:
 	template <typename InputIterator>
 	static Tree create(InputIterator begin, InputIterator end);
 private:
-    NodePtr root { nullptr };
+    NodePtr<KeyType> root { nullptr };
 };
 
 template<typename InputIterator>

@@ -4,22 +4,26 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Node::Node(KeyType key)
+template <typename T>
+Node<T>::Node(T key)
     : key(key), height(1), left(nullptr), right(nullptr) { }
 
-int Node::bfactor() const
+template <typename T>
+int Node<T>::bfactor() const
 {
     return heightOrZero(this->right) - heightOrZero(this->left);
 }
 
-void Node::fixHeight()
+template <typename T>
+void Node<T>::fixHeight()
 {
     auto left_height = heightOrZero(this->left);
     auto right_height = heightOrZero(this->right);
     this->height = std::max(left_height, right_height) + 1;
 }
 
-NodePtr Node::rotateRight(NodePtr& p)
+template <typename T>
+NodePtr<T> Node<T>::rotateRight(NodePtr<T>& p)
 {
     auto q = p->left;
     p->left = q->right;
@@ -29,7 +33,8 @@ NodePtr Node::rotateRight(NodePtr& p)
     return q;
 }
 
-NodePtr Node::rotateLeft(NodePtr& q)
+template <typename T>
+NodePtr<T> Node<T>::rotateLeft(NodePtr<T>& q)
 {
     auto p = q->right;
     q->right = p->left;
@@ -39,7 +44,8 @@ NodePtr Node::rotateLeft(NodePtr& q)
     return p;
 }
 
-NodePtr Node::balance(NodePtr& p)
+template <typename T>
+NodePtr<T> Node<T>::balance(NodePtr<T>& p)
 {
     p->fixHeight();
     if (p->bfactor() == 2) {
@@ -59,7 +65,8 @@ NodePtr Node::balance(NodePtr& p)
     return p;
 }
 
-uint8_t Node::heightOrZero(const NodePtr& node)
+template <typename T>
+uint8_t Node<T>::heightOrZero(const NodePtr<T>& node)
 {
     if (node == nullptr) {
         return 0;
@@ -67,7 +74,8 @@ uint8_t Node::heightOrZero(const NodePtr& node)
     return node->height;
 }
 
-NodePtr Node::insert(NodePtr& root, KeyType key)
+template <typename T>
+NodePtr<T> Node<T>::insert(NodePtr<T>& root, T key)
 {
     if (root == nullptr) {
         root = std::make_shared<Node>(key);
@@ -81,7 +89,8 @@ NodePtr Node::insert(NodePtr& root, KeyType key)
     return balance(root);
 }
 
-NodePtr Node::findMin(NodePtr root)
+template <typename T>
+NodePtr<T> Node<T>::findMin(NodePtr<T> root)
 {
     if (root->left == nullptr) {
         return root;
@@ -89,7 +98,8 @@ NodePtr Node::findMin(NodePtr root)
     return findMin(root->left);
 }
 
-NodePtr Node::find(NodePtr root, KeyType key)
+template <typename T>
+NodePtr<T> Node<T>::find(NodePtr<T> root, T key)
 {
     if (root == nullptr) {
         return nullptr;
@@ -103,7 +113,8 @@ NodePtr Node::find(NodePtr root, KeyType key)
     return root;
 }
 
-NodePtr Node::removeMin(NodePtr& root)
+template <typename T>
+NodePtr<T> Node<T>::removeMin(NodePtr<T>& root)
 {
     if (root->left == nullptr) {
         return root->right;
@@ -112,7 +123,8 @@ NodePtr Node::removeMin(NodePtr& root)
     return balance(root);
 }
 
-NodePtr Node::remove(NodePtr& root, KeyType key)
+template <typename T>
+NodePtr<T> Node<T>::remove(NodePtr<T>& root, T key)
 {
     // TODO: check function
     if (root == nullptr) {
@@ -139,22 +151,22 @@ NodePtr Node::remove(NodePtr& root, KeyType key)
 
 void Tree::add(KeyType key)
 {
-    this->root = Node::insert(this->root, key);
+    this->root = Node<KeyType>::insert(this->root, key);
 }
 
 void Tree::remove(KeyType key)
 {
-    this->root = Node::remove(this->root, key);
+    this->root = Node<KeyType>::remove(this->root, key);
 }
 
 bool Tree::isContains(KeyType key) const
 {
-    return Node::find(this->root, key) != nullptr;
+    return Node<KeyType>::find(this->root, key) != nullptr;
 }
 
 int Tree::getHeight() const
 {
-    return Node::heightOrZero(this->root);
+    return Node<KeyType>::heightOrZero(this->root);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
