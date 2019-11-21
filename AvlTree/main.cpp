@@ -115,7 +115,7 @@ int timeOperationUSec(Tree& tree, const std::function<void(Tree&)>& operation)
     operation(tree);
     auto end = std::chrono::high_resolution_clock::now();
     auto diff = end - begin;
-    return std::chrono::duration_cast<std::chrono::microseconds>(diff).count();
+    return int(std::chrono::duration_cast<std::chrono::microseconds>(diff).count());
 }
 
 Tree createRandom(int item_count, int max_item)
