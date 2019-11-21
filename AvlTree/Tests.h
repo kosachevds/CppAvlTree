@@ -1,7 +1,7 @@
 #ifndef TESTS_H
 #define TESTS_H
 
-#include <vector>
+#include <unordered_set>
 
 class Tests
 {
@@ -11,10 +11,9 @@ public:
 	Tests removingRandom() const;
 	Tests removingRandomDeep() const;
 	Tests removingSequence() const;
+	static std::unordered_set<int> createRandomSet(int count);
 private:
 	int _item_count;
-
-	std::vector<int> generateUniqueRandom() const;
 };
 
 #endif
