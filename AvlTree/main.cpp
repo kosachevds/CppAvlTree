@@ -1,5 +1,6 @@
 #include "AvlTree.h"
 #include "Tests.h"
+#include "Measures.h"
 #include <iostream>
 
 int main()
@@ -11,6 +12,8 @@ int main()
 		.removingRandomDeep()
 		.removingSequence();
 	std::cout << "Tests passed!\n";
+
+	auto heights = Measures(1000).heightsWithAscendingItems();
 
     return 0;
 }
