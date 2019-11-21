@@ -11,8 +11,6 @@
 
 template <typename InputIterator>
 void write(std::ostream& stream, const InputIterator& begin, const InputIterator& end);
-std::vector<int> measureHeightWithRandom(int items_count);
-std::vector<int> measureHeightWithAcsending(int items_count);
 void addRandom(Tree& tree, int max_item);
 void removeRandom(Tree& tree, int max_item);
 std::valarray<int> timeOperationUSec(int items_count, const std::function<void(Tree&)>& operation);
@@ -63,28 +61,6 @@ void write(std::ostream& stream, const InputIterator& begin, const InputIterator
     for (auto it = begin; it != end; ++it) {
         stream << *it;
     }
-}
-
-std::vector<int> measureHeightWithRandom(int items_count)
-{
-    std::vector<int> heights(items_count);
-    Tree tree;
-    for (int i = 0; i < items_count; ++i) {
-        heights[i] = tree.getHeight();
-        addRandom(tree, items_count);
-    }
-    return heights;
-}
-
-std::vector<int> measureHeightWithAcsending(int items_count)
-{
-    std::vector<int> heights(items_count);
-    Tree tree;
-    for (int i = 0; i < items_count; ++i) {
-        heights[i] = tree.getHeight();
-        tree.add(i);
-    }
-    return heights;
 }
 
 void addRandom(Tree& tree, int max_item)
