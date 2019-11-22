@@ -4,26 +4,53 @@
 #include "Node.h"
 #include <memory>
 
+template <typename T>
 class Tree final
 {
 public:
-	using KeyType = int;
 	Tree() = default;
-    void add(KeyType key);
-    void remove(KeyType key);
-    bool isContains(KeyType key) const;
+    void add(T key);
+    void remove(T key);
+    bool isContains(T key) const;
     int getHeight() const;
 
 	template <typename InputIterator>
-	static Tree create(InputIterator begin, InputIterator end);
+	static Tree<T> create(InputIterator begin, InputIterator end);
 private:
-    NodePtr<KeyType> root { nullptr };
+    NodePtr<T> root { nullptr };
 };
 
-template<typename InputIterator>
-inline Tree Tree::create(InputIterator begin, InputIterator end)
+///////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+void Tree<T>::add(T key)
 {
-	Tree tree;
+	this->root = Node<T>::insert(this->root, key);
+}
+
+template<typename T>
+void Tree<T>::remove(T key)
+{
+	this->root = Node<T>::remove(this->root, key);
+}
+
+template<typename T>
+bool Tree<T>::isContains(T key) const
+{
+	return Node<T>::find(this->root, key) != nullptr;
+}
+
+template<typename T>
+int Tree<T>::getHeight() const
+{
+	return Node<T>::heightOrZero(this->root);
+}
+
+template <typename T>
+template <typename InputIterator>
+inline Tree<T> Tree<T>::create(InputIterator begin, InputIterator end)
+{
+	Tree<T> tree;
 	for (auto it = begin; it != end; ++it) {
 		tree.add(*it);
 	}

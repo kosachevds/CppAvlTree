@@ -11,7 +11,7 @@ Measures::Measures(int item_count)
 std::vector<int> Measures::heightsWithRandomItems() const
 {
 	std::vector<int> heights(this->_item_count);
-	Tree tree;
+	Tree<int> tree;
 	for (int i = 0; i < this->_item_count; ++i) {
 		tree.add(rand());
 		heights[i] = tree.getHeight();
@@ -22,7 +22,7 @@ std::vector<int> Measures::heightsWithRandomItems() const
 std::vector<int> Measures::heightsWithAscendingItems() const
 {
 	std::vector<int> heights(this->_item_count);
-	Tree tree;
+	Tree<int> tree;
 	for (int i = 0; i < this->_item_count; ++i) {
 		tree.add(i);
 		heights[i] = tree.getHeight();
@@ -37,7 +37,7 @@ std::vector<int> Measures::timesRemoving(int min_count, int max_count, int count
 	items.reserve(max_count);
     for (int count = min_count; count <= max_count; count += count_step) {
 		items = Utils::addRandomItems(items, items.size() - count);
-		auto tree = Tree::create(items.begin(), items.end());
+		auto tree = Tree<int>::create(items.begin(), items.end());
 		auto random_item = rand();
 
 		auto begin = std::chrono::high_resolution_clock::now();

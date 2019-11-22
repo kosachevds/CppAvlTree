@@ -1,6 +1,7 @@
 #ifndef NODE_H
 
 #include <memory>
+#include <algorithm>
 
 template <typename T>
 struct Node;
