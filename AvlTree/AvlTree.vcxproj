@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="AvlTree.h" />
     <ClInclude Include="Measures.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="Tests.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
