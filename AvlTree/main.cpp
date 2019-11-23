@@ -5,7 +5,11 @@
 
 int main()
 {
+#ifdef _DEBUG
+	const auto TEST_ITEMS_COUNT = 1'000;
+#else
 	const auto TEST_ITEMS_COUNT = 10'000;
+#endif
 	Tests(TEST_ITEMS_COUNT)
 		.adding()
 		.removingRandom()
