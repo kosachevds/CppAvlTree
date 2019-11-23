@@ -77,7 +77,6 @@ NodePtr<T> Node<T>::remove(NodePtr<T>& root, T key)
 		root->right = remove(root->right, key);
 	}
 	else {
-		// TODO: ?
 		if (root->right == nullptr) {
 			return root->left;
 		}
@@ -110,6 +109,7 @@ NodePtr<T> Node<T>::insert(NodePtr<T>& root, T key)
 template <typename T>
 NodePtr<T> Node<T>::findMin(NodePtr<T> root)
 {
+	// TODO: ?
 	if (root->left == nullptr) {
 		return root;
 	}
@@ -146,7 +146,6 @@ NodePtr<T> Node<T>::balance(NodePtr<T>& p)
 	}
 	return p;
 }
-
 
 template <typename T>
 int Node<T>::bfactor() const
