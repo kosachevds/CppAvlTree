@@ -78,11 +78,11 @@ NodePtr<T> Node<T>::remove(NodePtr<T>& root, T key)
 	}
 	else {
 		// TODO: ?
+		if (root->right == nullptr) {
+			return root->left;
+		}
 		auto q = root->left;
 		auto r = root->right;
-		if (r == nullptr) {
-			return q;
-		}
 		auto min_node = findMin(r);
 		min_node->right = removeMin(r);
 		min_node->left = q;
@@ -167,8 +167,8 @@ NodePtr<T> Node<T>::rotateRight(NodePtr<T>& p)
 {
 	auto q = p->left;
 	p->left = q->right;
-	p->fixHeight();
 	q->right = p;
+	p->fixHeight();
 	q->fixHeight();
 	return q;
 }
@@ -178,8 +178,8 @@ NodePtr<T> Node<T>::rotateLeft(NodePtr<T>& q)
 {
 	auto p = q->right;
 	q->right = p->left;
-	q->fixHeight();
 	p->left = q;
+	q->fixHeight();
 	p->fixHeight();
 	return p;
 }
