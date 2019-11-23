@@ -56,7 +56,7 @@ Tests Tests::removingSequence() const
 	}
 	for (int i = 0; i < this->_item_count; ++i) {
 		tree.remove(i);
-		assert(!tree.isContains(item));
+		assert(!tree.isContains(i));
 	}
 	return *this;
 }

@@ -46,4 +46,5 @@ std::vector<int> Measures::timesRemoving(int min_count, int max_count, int count
 		auto diff = end - begin;
         times.push_back(int(std::chrono::duration_cast<std::chrono::microseconds>(diff).count()));
     }
+	return times;
 }
