@@ -153,6 +153,7 @@
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AvlTree.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Measures.cpp" />
     <ClCompile Include="Node.cpp" />
